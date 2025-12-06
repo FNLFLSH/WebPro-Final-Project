@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.sql.bak
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# PHP specific
+composer.phar
+composer.lock
+
+# Node specific
+package-lock.json
+yarn.lock
+

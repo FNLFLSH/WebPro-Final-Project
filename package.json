@@ -1,0 +1,17 @@
+{
+  "name": "christmas-puzzle",
+  "version": "1.0.0",
+  "description": "Holiday-themed fifteen puzzle game",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "keywords": [
+    "puzzle",
+    "game",
+    "christmas"
+  ],
+  "author": "",
+  "license": "ISC"
+}
