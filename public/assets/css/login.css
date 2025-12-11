@@ -1,0 +1,236 @@
+/* GLOBAL CHRISTMAS FONTS LOADED FROM login.php */
+/* IMPORTANT: DO NOT USE @import HERE — Google Fonts fail inside CSS */
+
+/* PAGE BACKGROUND */
+body {
+    background: linear-gradient(to bottom, #56d4e6, #bdeff0);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    color: white;
+}
+
+/* SNOWFLAKES */
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 1.4rem;
+    opacity: 0.95;
+    animation: fall linear infinite;
+    pointer-events: none;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-10px) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) translateX(30px);
+        opacity: 0.4;
+    }
+}
+
+/* AUTH CARD */
+.auth-container {
+    background: rgba(255, 255, 255, 0.22);
+    padding: 40px 45px;
+    border-radius: 25px;
+    text-align: center;
+    width: 380px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0px 8px 35px rgba(0, 0, 0, 0.18);
+}
+
+/* CHRISTMAS TITLE */
+h1 {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    line-height: 1.3;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+/* TOGGLE BUTTONS */
+.form-toggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.form-toggle button {
+    background: rgba(255, 255, 255, 0.35);
+    border: none;
+    padding: 10px 28px;
+    cursor: pointer;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: 0.25s ease;
+}
+
+.form-toggle button.active {
+    background: white;
+    color: #2e2e2e;
+}
+
+.form-toggle button:hover {
+    background: rgba(255, 255, 255, 0.65);
+}
+
+/* FORM BOXES */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.auth-form input {
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.2s ease-in-out;
+}
+
+.auth-form input:focus {
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.5);
+}
+
+/* FORM BUTTONS */
+.auth-form button {
+    padding: 13px;
+    background: linear-gradient(to right, #ffe760, #ffe08e);
+    color: #333;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1.05rem;
+    transition: 0.25s ease;
+}
+
+.auth-form button:hover {
+    background: linear-gradient(to right, #ffdf47, #ffd773);
+    transform: translateY(-2px);
+}
+
+/* HIDDEN FORMS */
+.hidden {
+    display: none;
+}
+
+/* ERROR / SUCCESS MESSAGE */
+.message {
+    font-size: 0.95rem;
+    margin-top: 12px;
+    color: #fffbdc;
+}
+
+.santa-pic {
+    width: 500px;
+    height: auto;
+    position: absolute;
+    top: -230px;   /* adjust as needed */
+    left: -55px;  /* adjust as needed */
+    border-radius: 0;
+    box-shadow: none;
+    background: none;
+}
+
+/* MUSIC TOGGLE BUTTON – Blue Winter Theme */
+.music-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* moved to bottom left */
+    background: rgba(180, 220, 255, 0.6);
+    border: 2px solid rgba(230, 245, 255, 0.8);
+    padding: 14px 16px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(150, 200, 255, 0.5);
+    transition: 0.25s ease;
+    color: #ffffff;
+}
+
+/* Hover Effect — frosty glow */
+.music-btn:hover {
+    background: rgba(210, 235, 255, 0.9);
+    transform: scale(1.15);
+    box-shadow: 0 0 18px rgba(160, 220, 255, 0.9);
+}
+
+
+/* --------------------------------------
+   FLOATING CLOUD BACKGROUND
+--------------------------------------- */
+
+.cloud {
+    position: absolute;
+    top: 0;
+    width: 350px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.5);
+    filter: blur(20px);
+    border-radius: 100px;
+    opacity: 0.6;
+    animation: cloud-move 30s linear infinite;
+    pointer-events: none; /* clouds won't block clicks */
+    z-index: 0; /* behind everything */
+}
+
+/* Individual cloud positions */
+.cloud1 {
+    top: 10%;
+    left: -400px;
+    animation-delay: 0s;
+}
+
+.cloud2 {
+    top: 30%;
+    left: -600px;
+    width: 420px;
+    height: 150px;
+    animation-delay: 8s;
+    opacity: 0.70;
+}
+
+.cloud3 {
+    top: 60%;
+    left: -500px;
+    width: 390px;
+    height: 130px;
+    animation-delay: 15s;
+    opacity: 0.60;
+}
+
+.cloud4 {
+    top: 80%;
+    left: -450px;
+    width: 370px;
+    height: 140px;
+    animation-delay: 25s;
+    opacity: 0.55;
+}
+
+/* Cloud Movement Animation */
+@keyframes cloud-move {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(140vw); /* float all the way across screen */
+    }
+}

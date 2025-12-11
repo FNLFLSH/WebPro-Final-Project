@@ -1,0 +1,245 @@
+
+/* BACKGROUND */
+body {
+    background: linear-gradient(to bottom, #56d4e6, #bdeff0);
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 30px 20px;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+/* TITLE */
+.title {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 3rem;
+    margin-bottom: 25px;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    color: #ffffff;
+}
+
+/* PUZZLE WRAPPER */
+.puzzle-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* PUZZLE BOARD */
+#puzzle-board {
+    width: 340px;
+    height: 340px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+}
+
+/* PUZZLE TILES */
+.tile {
+    background: linear-gradient(to bottom, #8ecae6, #58b4d8);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.9rem;
+    font-weight: bold;
+    color: #023047;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Hover: frosty glow */
+.tile:hover {
+    background: linear-gradient(to bottom, #b0e3f0, #6ccced);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+/* EMPTY TILE */
+.empty {
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+}
+
+/* BUTTONS */
+.controls {
+    margin-top: 25px;
+}
+
+.controls button {
+    background: #ffffffdd;
+    color: #023047;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0 10px;
+    font-weight: 600;
+    transition: 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.controls button:hover {
+    background: #dff6ff;
+    transform: translateY(-3px);
+}
+
+/* ❄ OPTIONAL: BACKGROUND SNOWFLAKES */
+.snowflake-game {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 1.4rem;
+    opacity: 0.9;
+    animation: fall linear infinite;
+    pointer-events: none;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-10px) translateX(0); opacity: 1; }
+    100% { transform: translateY(110vh) translateX(30px); opacity: 0.3; }
+}
+
+/* ❄️ WINTER POPUP MODAL ❄️ */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 30px 40px;
+    border-radius: 20px;
+    width: 330px;
+    text-align: center;
+    color: white;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    animation: popIn 0.5s ease forwards;
+}
+
+/* Pop-in animation */
+@keyframes popIn {
+    0% { transform: scale(0.4); opacity: 0; }
+    60% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+.modal-title {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.modal-text {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.modal-btn {
+    background: #dff6ff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #023047;
+    transition: 0.25s;
+}
+
+.modal-btn:hover {
+    background: #bfe8f8;
+    transform: translateY(-2px);
+}
+
+/* Close (X) button */
+.modal-close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: white;
+}
+
+
+/* MUSIC TOGGLE BUTTON – Blue Winter Theme */
+.music-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* moved to bottom left */
+    background: rgba(180, 220, 255, 0.6);
+    border: 2px solid rgba(230, 245, 255, 0.8);
+    padding: 14px 16px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(150, 200, 255, 0.5);
+    transition: 0.25s ease;
+    color: #ffffff;
+}
+
+/* Hover Effect — frosty glow */
+.music-btn:hover {
+    background: rgba(210, 235, 255, 0.9);
+    transform: scale(1.15);
+    box-shadow: 0 0 18px rgba(160, 220, 255, 0.9);
+}
+
+
+/* COUNTDOWN OVERLAY */
+.countdown {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 6rem;
+    color: white;
+    text-shadow: 0 0 20px rgba(255,255,255,0.8);
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.countdown.show {
+    opacity: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+/* STOPWATCH TIMER */
+.timer {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
