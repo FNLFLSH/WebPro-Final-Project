@@ -168,3 +168,4 @@ WebPro3/
 3. Check browser console (F12) for errors
 4. Verify database connection: `php test_db_connection.php`
 
+

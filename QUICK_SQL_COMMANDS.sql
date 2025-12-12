@@ -13,3 +13,4 @@ UPDATE user_preferences SET current_level = 1 WHERE current_level IS NULL;
 -- Verify it worked
 DESCRIBE user_preferences;
 
+
