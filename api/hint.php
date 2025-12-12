@@ -14,14 +14,24 @@ $userId = requireAuth();
 $mysqli = getMySQLi();
 
 $input     = json_decode(file_get_contents('php://input'), true);
+if ($input === null) {
+    jsonResponse(['error' => 'Invalid JSON input'], 400);
+}
+
 $sessionId = (int)($input['sessionId'] ?? 0);
 $board     = $input['board'] ?? [];
 $gridSize  = (int)($input['gridSize'] ?? 4);
 
+// Validate board is an array
+if (!is_array($board)) {
+    jsonResponse(['error' => 'Board must be an array'], 400);
+}
+
 // If gridSize is provided directly, use it (for level-based gameplay)
-if ($gridSize > 0 && is_array($board)) {
-    if (count($board) !== $gridSize * $gridSize) {
-        jsonResponse(['error' => 'Invalid board size'], 400);
+if ($gridSize > 0 && is_array($board) && count($board) > 0) {
+    $expectedSize = $gridSize * $gridSize;
+    if (count($board) !== $expectedSize) {
+        jsonResponse(['error' => 'Invalid board size. Expected ' . $expectedSize . ' tiles, got ' . count($board)], 400);
     }
     $size = $gridSize;
 } else if ($sessionId > 0) {
@@ -52,14 +62,19 @@ if ($gridSize > 0 && is_array($board)) {
     jsonResponse(['error' => 'Invalid payload'], 400);
 }
 
-$hintIndex = getHintMove($board, $size);
-
-if ($hintIndex === null) {
-    jsonResponse(['success' => true, 'hintAvailable' => false]);
+try {
+    $hintIndex = getHintMove($board, $size);
+    
+    if ($hintIndex === null) {
+        jsonResponse(['success' => true, 'hintAvailable' => false]);
+    }
+    
+    jsonResponse([
+        'success'       => true,
+        'hintAvailable' => true,
+        'hintIndex'     => $hintIndex
+    ]);
+} catch (Exception $e) {
+    error_log("Hint error: " . $e->getMessage());
+    jsonResponse(['error' => 'Failed to generate hint: ' . $e->getMessage()], 500);
 }
-
-jsonResponse([
-    'success'       => true,
-    'hintAvailable' => true,
-    'hintIndex'     => $hintIndex
-]);

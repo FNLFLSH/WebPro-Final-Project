@@ -23,24 +23,48 @@ function getMySQLi(): mysqli {
         global $DB_HOST, $DB_NAME, $DB_USER, $DB_PASS;
 
         try {
-            // Try direct connection first
-            $mysqli = @new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, 3306);
+            $mysqli = null;
+            $lastError = '';
             
-            // If direct connection fails, try localhost (SSH tunnel)
-            if ($mysqli->connect_error && $DB_HOST !== '127.0.0.1') {
-                $mysqli = @new mysqli('127.0.0.1', $DB_USER, $DB_PASS, $DB_NAME, 3306);
+            // Try SSH tunnel first (localhost) since that's what we're using
+            $mysqli = @new mysqli('127.0.0.1', $DB_USER, $DB_PASS, $DB_NAME, 3306);
+            if ($mysqli->connect_error) {
+                $lastError = $mysqli->connect_error;
+                if ($mysqli) {
+                    @$mysqli->close();
+                }
+                $mysqli = null;
             }
             
-            if ($mysqli->connect_error) {
+            // If tunnel failed, try direct connection
+            if ($mysqli === null && $DB_HOST !== '127.0.0.1') {
+                $mysqli = @new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, 3306);
+                if ($mysqli->connect_error) {
+                    $lastError = $mysqli->connect_error;
+                    if ($mysqli) {
+                        @$mysqli->close();
+                    }
+                    $mysqli = null;
+                }
+            }
+            
+            // If both failed, return error
+            if ($mysqli === null) {
                 http_response_code(500);
-                echo json_encode(['error' => 'Database connection failed: ' . $mysqli->connect_error . '. Make sure you are connected to GSU network or VPN.']);
+                $errorMsg = 'Database connection failed. ';
+                if (strpos($lastError, 'Connection refused') !== false) {
+                    $errorMsg .= 'SSH tunnel not running. Open a terminal and run: ssh -L 3306:localhost:3306 ebinitie1@codd.cs.gsu.edu';
+                } else {
+                    $errorMsg .= $lastError;
+                }
+                echo json_encode(['error' => $errorMsg]);
                 exit;
             }
             
             $mysqli->set_charset('utf8mb4');
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(['error' => 'Database connection failed']);
+            echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
             exit;
         }
     }

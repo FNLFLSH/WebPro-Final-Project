@@ -90,3 +90,5 @@ CREATE TABLE IF NOT EXISTS move_history (
 SHOW TABLES;
 DESCRIBE user_preferences;
 
+
+

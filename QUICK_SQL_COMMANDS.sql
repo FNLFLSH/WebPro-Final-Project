@@ -1,5 +1,5 @@
--- Migration: Add current_level to user_preferences table
--- Run this on codd.cs.gsu.edu
+-- Quick SQL Commands to Add Level System
+-- Run these while logged into MySQL on codd.cs.gsu.edu
 
 USE ebinitie1;
 
@@ -10,5 +10,6 @@ ADD COLUMN current_level INT DEFAULT 1 AFTER difficulty_preference;
 -- Update existing users to start at level 1
 UPDATE user_preferences SET current_level = 1 WHERE current_level IS NULL;
 
-
+-- Verify it worked
+DESCRIBE user_preferences;
 

@@ -1,0 +1,190 @@
+/* LEVELS PAGE STYLES */
+
+.levels-container {
+    background: rgba(255, 255, 255, 0.22);
+    padding: 50px 45px;
+    border-radius: 25px;
+    text-align: center;
+    max-width: 800px;
+    width: 90%;
+    backdrop-filter: blur(12px);
+    box-shadow: 0px 8px 35px rgba(0, 0, 0, 0.18);
+    position: relative;
+    z-index: 10;
+    margin: 0 auto;
+}
+
+.levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.level-card {
+    background: rgba(255, 255, 255, 0.35);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    padding: 25px 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.level-card.unlocked {
+    cursor: pointer;
+}
+
+.level-card.unlocked:hover {
+    background: rgba(255, 255, 255, 0.55);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.level-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(150, 150, 150, 0.2);
+}
+
+.level-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+    font-family: 'Mountains of Christmas', cursive;
+}
+
+.level-number.locked-icon {
+    font-size: 2.5rem;
+}
+
+.level-info {
+    margin: 15px 0;
+}
+
+.level-size {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.level-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    margin-top: 5px;
+}
+
+.level-badge.current {
+    background: rgba(255, 231, 96, 0.8);
+    color: #333;
+}
+
+.level-badge.locked {
+    background: rgba(200, 200, 200, 0.6);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.level-play-btn {
+    display: block;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: rgba(255, 231, 96, 0.8);
+    border: 2px solid rgba(255, 200, 50, 0.9);
+    border-radius: 12px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+}
+
+.level-play-btn:hover {
+    background: rgba(255, 241, 120, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+}
+
+.level-lock-message {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 10px;
+    font-style: italic;
+    font-family: 'Poppins', sans-serif;
+}
+
+.back-button {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: rgba(200, 200, 255, 0.4);
+    border: 2px solid rgba(180, 180, 255, 0.6);
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-btn:hover {
+    background: rgba(220, 220, 255, 0.6);
+    border-color: rgba(200, 200, 255, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Dark mode styles */
+body.dark-mode .levels-container {
+    background: rgba(20, 20, 30, 0.85);
+    box-shadow: 0px 8px 35px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .level-card {
+    background: rgba(40, 40, 55, 0.6);
+    border-color: rgba(100, 100, 120, 0.5);
+}
+
+body.dark-mode .level-card.unlocked:hover {
+    background: rgba(60, 60, 75, 0.8);
+    border-color: rgba(120, 120, 140, 0.7);
+}
+
+body.dark-mode .level-card.locked {
+    background: rgba(30, 30, 40, 0.4);
+}
+
+body.dark-mode .level-play-btn {
+    background: rgba(255, 200, 50, 0.7);
+    color: #1a1a1a;
+}
+
+body.dark-mode .back-btn {
+    background: rgba(80, 80, 120, 0.4);
+    border-color: rgba(100, 100, 140, 0.6);
+}
+

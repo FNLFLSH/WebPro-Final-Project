@@ -65,7 +65,7 @@
     <h1 class="title">Welcome to the Christmas Puzzle</h1>
     
     <div class="button-group">
-        <a href="/frontend/index.php" class="home-btn play-btn">
+        <a href="/frontend/levels.php" class="home-btn play-btn">
             <span class="btn-icon">🎮</span>
             <span class="btn-text">Play</span>
         </a>

@@ -227,11 +227,16 @@ function checkWin() {
 
 //  HANDLE WIN - Advance level and show modal
 async function handleWin() {
+    // Check if level was specified in URL (from level selection)
+    const urlParams = new URLSearchParams(window.location.search);
+    const levelParam = urlParams.get('level');
+    
     const currentLevel = typeof getCurrentLevel === 'function' ? getCurrentLevel() : 1;
     const maxLevel = typeof MAX_LEVEL !== 'undefined' ? MAX_LEVEL : 8;
     
     let levelAdvanced = false;
-    if (currentLevel < maxLevel && typeof advanceLevel === 'function') {
+    // Only advance if no level was specified in URL (playing from home/current level)
+    if (!levelParam && currentLevel < maxLevel && typeof advanceLevel === 'function') {
         levelAdvanced = await advanceLevel();
     }
     
@@ -292,6 +297,22 @@ document.getElementById("shuffleBtn").onclick = () => {
 };
 
 document.getElementById("hintBtn").onclick = () => {
+    // Don't allow hints if paused
+    if (typeof window !== 'undefined' && window.isPaused && window.isPaused()) {
+        return;
+    }
+    
+    // Check if board is initialized
+    if (!tiles || tiles.length === 0) {
+        alert("Please start a game first!");
+        return;
+    }
+    
+    // Disable button temporarily to prevent spam
+    const hintBtn = document.getElementById("hintBtn");
+    hintBtn.disabled = true;
+    hintBtn.textContent = "💡 Loading...";
+    
     // Send current board state and grid size to hint API
     fetch("/api/hint.php", {
         method: "POST",
@@ -303,28 +324,81 @@ document.getElementById("hintBtn").onclick = () => {
             gridSize: gridSize
         })
     })
-    .then(r => r.json())
+    .then(r => {
+        if (!r.ok) {
+            throw new Error(`HTTP error! status: ${r.status}`);
+        }
+        return r.json();
+    })
     .then(d => {
+        if (d.error) {
+            console.error("Hint API error:", d.error);
+            alert("Error: " + d.error);
+            return;
+        }
+        
         if (d.hintAvailable && d.hintIndex !== undefined) {
             // Highlight the suggested tile
-            const tiles = board.querySelectorAll('.tile');
-            if (tiles[d.hintIndex]) {
-                tiles[d.hintIndex].style.animation = 'pulse 0.5s ease 3';
+            const tileElements = board.querySelectorAll('.tile');
+            if (tileElements[d.hintIndex]) {
+                // Remove any existing animation
+                tileElements[d.hintIndex].style.animation = '';
+                // Force reflow
+                void tileElements[d.hintIndex].offsetWidth;
+                // Add pulse animation
+                tileElements[d.hintIndex].style.animation = 'pulse 0.5s ease 3';
+            } else {
+                console.warn("Hint index", d.hintIndex, "not found in DOM. Total tiles:", tileElements.length);
             }
         } else {
             alert("No hints available at this time.");
         }
+    })
+    .catch(error => {
+        console.error("Hint fetch error:", error);
+        alert("Failed to get hint. Please check the browser console (F12) for details.");
+    })
+    .finally(() => {
+        // Re-enable button
+        hintBtn.disabled = false;
+        hintBtn.textContent = "💡 Hint";
     });
 };
 
 //  INITIALIZE GAME - Load level first, then init board
 document.addEventListener('DOMContentLoaded', async () => {
-    // Load user's current level
-    if (typeof loadUserLevel === 'function') {
-        await loadUserLevel();
-        gridSize = typeof getCurrentGridSize === 'function' ? getCurrentGridSize() : 4;
-        totalTiles = gridSize * gridSize;
-        emptyIndex = totalTiles - 1;
+    // Check for level parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const levelParam = urlParams.get('level');
+    
+    if (levelParam) {
+        // Level specified in URL - use it
+        const requestedLevel = parseInt(levelParam, 10);
+        if (requestedLevel >= 1 && requestedLevel <= 8) {
+            // Set level directly using levels.js functions
+            if (typeof window !== 'undefined' && window.LEVEL_TO_SIZE) {
+                // Set the level in levels.js
+                if (typeof window.setLevel === 'function') {
+                    await window.setLevel(requestedLevel);
+                }
+                gridSize = window.LEVEL_TO_SIZE[requestedLevel] || 4;
+                totalTiles = gridSize * gridSize;
+                emptyIndex = totalTiles - 1;
+                
+                // Update level display if function exists
+                if (typeof updateLevelDisplay === 'function') {
+                    updateLevelDisplay();
+                }
+            }
+        }
+    } else {
+        // No level parameter - load user's current level
+        if (typeof loadUserLevel === 'function') {
+            await loadUserLevel();
+            gridSize = typeof getCurrentGridSize === 'function' ? getCurrentGridSize() : 4;
+            totalTiles = gridSize * gridSize;
+            emptyIndex = totalTiles - 1;
+        }
     }
     
     // Initialize the board with the correct size

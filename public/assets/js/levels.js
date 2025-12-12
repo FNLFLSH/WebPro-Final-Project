@@ -112,12 +112,29 @@ function getCurrentGridSize() {
     return currentGridSize;
 }
 
+/**
+ * Set level directly (for level selection)
+ */
+async function setLevel(level) {
+    if (level >= 1 && level <= MAX_LEVEL) {
+        currentLevel = level;
+        currentGridSize = getGridSizeForLevel(level);
+        updateLevelDisplay();
+        // Don't save to server when selecting from menu - only save on completion
+        return true;
+    }
+    return false;
+}
+
 // Export for use in game.js
 window.loadUserLevel = loadUserLevel;
 window.saveUserLevel = saveUserLevel;
 window.advanceLevel = advanceLevel;
+window.setLevel = setLevel;
 window.getCurrentLevel = getCurrentLevel;
 window.getCurrentGridSize = getCurrentGridSize;
 window.LEVEL_TO_SIZE = LEVEL_TO_SIZE;
 window.MAX_LEVEL = MAX_LEVEL;
+
+
 
