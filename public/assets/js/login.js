@@ -43,8 +43,8 @@ loginForm.addEventListener("submit", async (e) => {
     document.getElementById("loginMessage").textContent = data.error || data.message;
 
     if (!data.error) {
-        // Successful login
-        window.location.href = "/frontend/index.php";
+        // Successful login - redirect to home page
+        window.location.href = "/frontend/home.php";
     }
 });
 

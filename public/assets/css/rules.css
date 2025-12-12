@@ -1,0 +1,74 @@
+/* RULES PAGE SPECIFIC STYLES */
+
+.rules-container {
+    background: rgba(255, 255, 255, 0.22);
+    padding: 40px 45px;
+    border-radius: 25px;
+    text-align: center;
+    width: 600px;
+    max-width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    backdrop-filter: blur(12px);
+    box-shadow: 0px 8px 35px rgba(0, 0, 0, 0.18);
+    position: relative;
+    z-index: 10; /* Above clouds, sleigh, and snowflakes */
+}
+
+.rules-content {
+    text-align: left;
+    margin: 20px 0;
+}
+
+.rule-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+.rule-section h2 {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.rule-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 10px;
+}
+
+.rule-section ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.rule-section li {
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+}
+
+.rule-section li:before {
+    content: "❄";
+    position: absolute;
+    left: 0;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.button-group .home-btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+}
+

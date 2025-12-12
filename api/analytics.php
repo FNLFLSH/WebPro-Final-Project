@@ -10,10 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 $userId = requireAuth();
-$pdo    = getPDO();
+$mysqli = getMySQLi();
 
-// --- User analytics summary (matches analytics_queries.sql "User analytics summary") ---
-$stmt = $pdo->prepare("
+// --- User analytics summary ---
+$stmt = $mysqli->prepare("
     SELECT 
         COUNT(DISTINCT gs.id) AS total_sessions,
         COUNT(DISTINCT CASE WHEN gs.completed = 1 THEN gs.id END) AS completed_sessions,
@@ -26,11 +26,17 @@ $stmt = $pdo->prepare("
     LEFT JOIN rewards r ON u.id = r.user_id
     WHERE u.id = ?
 ");
-$stmt->execute([$userId]);
-$summary = $stmt->fetch();
+if (!$stmt) {
+    jsonResponse(['error' => 'Database error'], 500);
+}
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+$summary = $result->fetch_assoc();
+$stmt->close();
 
 // --- Average completion time by puzzle size ---
-$stmt = $pdo->prepare("
+$stmt = $mysqli->prepare("
     SELECT 
         puzzle_size,
         AVG(completion_time) AS avg_time,
@@ -41,11 +47,20 @@ $stmt = $pdo->prepare("
     GROUP BY puzzle_size
     ORDER BY puzzle_size
 ");
-$stmt->execute([$userId]);
-$bySize = $stmt->fetchAll();
+if (!$stmt) {
+    jsonResponse(['error' => 'Database error'], 500);
+}
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+$bySize = [];
+while ($row = $result->fetch_assoc()) {
+    $bySize[] = $row;
+}
+$stmt->close();
 
 // --- Leaderboard by completion time (top 10) ---
-$leaderTime = $pdo->query("
+$query = "
     SELECT 
         u.username,
         MIN(gs.completion_time) AS best_time,
@@ -57,10 +72,17 @@ $leaderTime = $pdo->query("
     GROUP BY u.id, u.username
     ORDER BY best_time ASC
     LIMIT 10
-")->fetchAll();
+";
+$result = $mysqli->query($query);
+$leaderTime = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $leaderTime[] = $row;
+    }
+}
 
 // --- Leaderboard by moves (top 10) ---
-$leaderMoves = $pdo->query("
+$query = "
     SELECT 
         u.username,
         MIN(gs.moves) AS best_moves,
@@ -72,10 +94,17 @@ $leaderMoves = $pdo->query("
     GROUP BY u.id, u.username
     ORDER BY best_moves ASC
     LIMIT 10
-")->fetchAll();
+";
+$result = $mysqli->query($query);
+$leaderMoves = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $leaderMoves[] = $row;
+    }
+}
 
 // --- Recent completions feed ---
-$recent = $pdo->query("
+$query = "
     SELECT 
         u.username,
         gs.puzzle_size,
@@ -87,7 +116,25 @@ $recent = $pdo->query("
     WHERE gs.completed = TRUE
     ORDER BY gs.end_time DESC
     LIMIT 20
-")->fetchAll();
+";
+$result = $mysqli->query($query);
+$recent = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $recent[] = $row;
+    }
+}
+
+// Check if leaderboards are requested
+$requestType = $_GET['type'] ?? '';
+
+if ($requestType === 'leaderboards') {
+    jsonResponse([
+        'success' => true,
+        'fastest_times' => $leaderTime,
+        'fewest_moves' => $leaderMoves
+    ]);
+}
 
 jsonResponse([
     'success'        => true,

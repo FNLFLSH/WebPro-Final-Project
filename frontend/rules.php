@@ -1,23 +1,30 @@
 <?php
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
+    
+    // Start session with persistent configuration
+    require_once __DIR__ . '/../backend/session.php';
+    
+    // Check if user is logged in
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: /frontend/login.php");
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login – Christmas Puzzle</title>
+    <title>Game Rules – Christmas Puzzle</title>
 
     <!-- Christmas Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Snowburst+One&display=swap" rel="stylesheet">
-
-    <!-- Base Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="/public/assets/css/login.css">
+    <link rel="stylesheet" href="/public/assets/css/rules.css">
 </head>
 <body>
 
@@ -53,43 +60,51 @@
 <!-- Snowflakes container -->
 <div id="snow-container"></div>
 
-<div class="auth-container">
-    <h1 class="title"> Welcome to the Christmas Puzzle </h1>
-
-    <div class="form-toggle">
-        <button id="showLogin" class="active">Login</button>
-        <button id="showRegister">Register</button>
+<div class="rules-container">
+    <h1 class="title">Game Rules</h1>
+    
+    <div class="rules-content">
+        <div class="rule-section">
+            <h2>🎮 How to Play</h2>
+            <p>The Christmas Fifteen Puzzle is a sliding puzzle game. Your goal is to arrange the numbered tiles in order from 1 to 15, with the empty space in the bottom-right corner.</p>
+        </div>
+        
+        <div class="rule-section">
+            <h2>🎯 Objective</h2>
+            <p>Click on any tile adjacent to the empty space to move it. Continue moving tiles until all numbers are in the correct order.</p>
+        </div>
+        
+        <div class="rule-section">
+            <h2>💡 Tips</h2>
+            <ul>
+                <li>Plan your moves ahead</li>
+                <li>Work on one row or column at a time</li>
+                <li>Use the hint button if you get stuck</li>
+                <li>Try to solve it in as few moves as possible!</li>
+            </ul>
+        </div>
+        
+        <div class="rule-section">
+            <h2>🏆 Scoring</h2>
+            <p>Your score is based on the number of moves and time taken. The faster you solve it with fewer moves, the higher your score!</p>
+        </div>
     </div>
-
-    <!-- LOGIN FORM -->
-    <form id="loginForm" class="auth-form">
-        <input type="text" id="login_username" placeholder="Username" required>
-        <input type="password" id="login_password" placeholder="Password" required>
-        <button type="submit">Login</button>
-        <p class="message" id="loginMessage"></p>
-    </form>
-
-    <!-- REGISTER FORM -->
-    <form id="registerForm" class="auth-form hidden">
-        <input type="text" id="reg_username" placeholder="Username" required>
-        <input type="email" id="reg_email" placeholder="Email" required>
-        <input type="password" id="reg_password" placeholder="Password" required>
-        <button type="submit">Create Account</button>
-        <p class="message" id="registerMessage"></p>
-    </form>
+    
+    <div class="button-group">
+        <a href="/frontend/home.php" class="home-btn">← Back to Home</a>
+        <a href="/frontend/index.php" class="home-btn play-btn">🎮 Start Playing</a>
+    </div>
 </div>
-
-<!-- Login JS -->
-<script src="/public/assets/js/login.js"></script>
-
-<!-- Music JS -->
-<script src="/public/assets/js/music.js"></script>
 
 <!-- Universal Snowflakes -->
 <script src="/public/assets/js/snowflakes.js"></script>
+
+<!-- Music JS -->
+<script src="/public/assets/js/music.js"></script>
 
 <!-- Dark Mode JS -->
 <script src="/public/assets/js/darkmode.js"></script>
 
 </body>
 </html>
+

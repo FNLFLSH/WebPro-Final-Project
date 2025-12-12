@@ -26,7 +26,7 @@ body {
     margin-top: 20px;
 }
 
-/* PUZZLE BOARD */
+/* PUZZLE BOARD - Dynamic sizing */
 #puzzle-board {
     width: 340px;
     height: 340px;
@@ -35,12 +35,46 @@ body {
     padding: 12px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 10px;
+    grid-gap: 8px;
     backdrop-filter: blur(8px);
     box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+    transition: width 0.3s ease, height 0.3s ease;
+    max-width: 600px;
+    max-height: 600px;
 }
 
-/* PUZZLE TILES */
+/* Adjust gap for larger boards */
+#puzzle-board[style*="repeat(5)"] {
+    grid-gap: 6px;
+    padding: 10px;
+}
+
+#puzzle-board[style*="repeat(6)"] {
+    grid-gap: 5px;
+    padding: 8px;
+}
+
+#puzzle-board[style*="repeat(7)"] {
+    grid-gap: 4px;
+    padding: 6px;
+}
+
+#puzzle-board[style*="repeat(8)"] {
+    grid-gap: 3px;
+    padding: 5px;
+}
+
+#puzzle-board[style*="repeat(9)"] {
+    grid-gap: 3px;
+    padding: 4px;
+}
+
+#puzzle-board[style*="repeat(10)"] {
+    grid-gap: 2px;
+    padding: 4px;
+}
+
+/* PUZZLE TILES - Dynamic font sizing */
 .tile {
     background: linear-gradient(to bottom, #8ecae6, #58b4d8);
     border-radius: 10px;
@@ -53,6 +87,32 @@ body {
     cursor: pointer;
     transition: 0.25s ease;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-height: 40px;
+}
+
+/* Adjust font size for larger boards */
+#puzzle-board[style*="repeat(5)"] .tile {
+    font-size: 1.5rem;
+}
+
+#puzzle-board[style*="repeat(6)"] .tile {
+    font-size: 1.3rem;
+}
+
+#puzzle-board[style*="repeat(7)"] .tile {
+    font-size: 1.1rem;
+}
+
+#puzzle-board[style*="repeat(8)"] .tile {
+    font-size: 1rem;
+}
+
+#puzzle-board[style*="repeat(9)"] .tile {
+    font-size: 0.9rem;
+}
+
+#puzzle-board[style*="repeat(10)"] .tile {
+    font-size: 0.8rem;
 }
 
 /* Hover: frosty glow */
@@ -93,7 +153,30 @@ body {
     transform: translateY(-3px);
 }
 
-/* ❄ OPTIONAL: BACKGROUND SNOWFLAKES */
+/* ❄ UNIVERSAL SNOWFLAKES */
+.snowflake {
+    position: fixed;
+    top: -10px;
+    color: white;
+    font-size: 1.4rem;
+    opacity: 0.95;
+    animation: fall linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-10px) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) translateX(30px);
+        opacity: 0.4;
+    }
+}
+
+/* Legacy class for backwards compatibility */
 .snowflake-game {
     position: fixed;
     top: -10px;
@@ -102,11 +185,6 @@ body {
     opacity: 0.9;
     animation: fall linear infinite;
     pointer-events: none;
-}
-
-@keyframes fall {
-    0% { transform: translateY(-10px) translateX(0); opacity: 1; }
-    100% { transform: translateY(110vh) translateX(30px); opacity: 0.3; }
 }
 
 /* ❄️ WINTER POPUP MODAL ❄️ */
@@ -191,7 +269,7 @@ body {
 .music-btn {
     position: fixed;
     bottom: 20px;
-    left: 20px; /* moved to bottom left */
+    left: 20px;
     background: rgba(180, 220, 255, 0.6);
     border: 2px solid rgba(230, 245, 255, 0.8);
     padding: 14px 16px;
@@ -202,6 +280,7 @@ body {
     box-shadow: 0 0 12px rgba(150, 200, 255, 0.5);
     transition: 0.25s ease;
     color: #ffffff;
+    z-index: 100;
 }
 
 /* Hover Effect — frosty glow */
@@ -209,6 +288,56 @@ body {
     background: rgba(210, 235, 255, 0.9);
     transform: scale(1.15);
     box-shadow: 0 0 18px rgba(160, 220, 255, 0.9);
+}
+
+/* DARK MODE TOGGLE BUTTON (Universal - Top Right) */
+.dark-mode-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(50, 50, 50, 0.7);
+    border: 2px solid rgba(100, 100, 100, 0.8);
+    padding: 14px 16px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    transition: 0.25s ease;
+    color: #ffffff;
+    z-index: 100;
+}
+
+.dark-mode-btn:hover {
+    background: rgba(70, 70, 70, 0.9);
+    transform: scale(1.15);
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.7);
+}
+
+/* PAUSE BUTTON */
+.pause-btn {
+    position: fixed;
+    top: 20px;
+    right: 80px; /* Moved left to make room for dark mode button */
+    background: rgba(255, 200, 100, 0.8);
+    border: 2px solid rgba(255, 180, 80, 0.9);
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: 0.25s ease;
+    color: #333;
+    z-index: 100;
+    font-family: 'Poppins', sans-serif;
+}
+
+.pause-btn:hover {
+    background: rgba(255, 220, 120, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 
@@ -235,6 +364,21 @@ body {
     display: none;
 }
 
+/* LEVEL DISPLAY */
+.level-display {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #ffe760;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    font-family: 'Mountains of Christmas', cursive;
+}
+
+body.dark-mode .level-display {
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
 /* STOPWATCH TIMER */
 .timer {
     font-size: 1.3rem;
@@ -242,4 +386,173 @@ body {
     margin-top: 10px;
     color: #ffffff;
     text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Pulse animation for hint */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+    }
+}
+
+/* PAUSE MODAL STYLES */
+.pause-modal-content {
+    width: 500px;
+    max-width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.pause-rules {
+    text-align: left;
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+.rules-title {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: white;
+    text-align: center;
+}
+
+.rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rules-list li {
+    padding: 10px 0;
+    padding-left: 30px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.rules-list li:before {
+    content: "❄";
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+}
+
+.pause-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.resume-btn {
+    background: linear-gradient(to right, #4ade80, #22c55e);
+    color: white;
+    flex: 1;
+}
+
+.resume-btn:hover {
+    background: linear-gradient(to right, #22c55e, #16a34a);
+}
+
+.quit-btn {
+    background: linear-gradient(to right, #f87171, #ef4444);
+    color: white;
+    flex: 1;
+}
+
+.quit-btn:hover {
+    background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+/* DARK MODE STYLES */
+body.dark-mode {
+    background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+}
+
+body.dark-mode .title {
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode #puzzle-board {
+    background: rgba(30, 30, 30, 0.4);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.8);
+}
+
+body.dark-mode .tile {
+    background: linear-gradient(to bottom, #2d2d2d, #1a1a1a);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .tile:hover {
+    background: linear-gradient(to bottom, #3d3d3d, #2a2a2a);
+    box-shadow: 0 6px 14px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .controls button {
+    background: rgba(40, 40, 40, 0.8);
+    color: #ffffff;
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+body.dark-mode .controls button:hover {
+    background: rgba(60, 60, 60, 0.9);
+    border-color: rgba(150, 150, 150, 0.7);
+}
+
+body.dark-mode .modal-content {
+    background: rgba(20, 20, 20, 0.9);
+    border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+body.dark-mode .modal-title {
+    color: #ffffff;
+}
+
+body.dark-mode .modal-text {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .modal-btn {
+    background: rgba(60, 60, 60, 0.8);
+    color: #ffffff;
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+body.dark-mode .modal-btn:hover {
+    background: rgba(80, 80, 80, 0.9);
+}
+
+body.dark-mode .pause-rules {
+    background: rgba(30, 30, 30, 0.5);
+}
+
+body.dark-mode .rules-list li {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .timer {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .countdown {
+    color: #ffffff;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+}
+
+/* Snowflakes remain visible in dark mode */
+body.dark-mode .snowflake {
+    color: #ffffff;
+    opacity: 0.8;
 }

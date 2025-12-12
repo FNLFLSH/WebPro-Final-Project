@@ -23,6 +23,7 @@ body {
     opacity: 0.95;
     animation: fall linear infinite;
     pointer-events: none;
+    z-index: 20; /* Above everything including sleighs */
 }
 
 @keyframes fall {
@@ -45,6 +46,8 @@ body {
     width: 380px;
     backdrop-filter: blur(12px);
     box-shadow: 0px 8px 35px rgba(0, 0, 0, 0.18);
+    position: relative;
+    z-index: 10; /* Above clouds but below sleighs */
 }
 
 /* CHRISTMAS TITLE */
@@ -137,16 +140,7 @@ h1 {
     color: #fffbdc;
 }
 
-.santa-pic {
-    width: 500px;
-    height: auto;
-    position: absolute;
-    top: -230px;   /* adjust as needed */
-    left: -55px;  /* adjust as needed */
-    border-radius: 0;
-    box-shadow: none;
-    background: none;
-}
+/* Removed separate sleigh animation - now sleighs are part of clouds */
 
 /* MUSIC TOGGLE BUTTON – Blue Winter Theme */
 .music-btn {
@@ -174,7 +168,7 @@ h1 {
 
 
 /* --------------------------------------
-   FLOATING CLOUD BACKGROUND
+   FLOATING CLOUD BACKGROUND WITH SLEIGHS
 --------------------------------------- */
 
 .cloud {
@@ -188,7 +182,49 @@ h1 {
     opacity: 0.6;
     animation: cloud-move 30s linear infinite;
     pointer-events: none; /* clouds won't block clicks */
-    z-index: 0; /* behind everything */
+    z-index: 1; /* Above background but below content */
+    overflow: visible; /* Allow sleigh to be visible above cloud */
+}
+
+/* Sleighs - positioned above clouds but under center banner */
+.cloud-sleigh {
+    position: fixed;
+    width: 300px;
+    height: auto;
+    z-index: 5; /* Above clouds but below center banner (z-index: 10) */
+    pointer-events: none;
+    opacity: 1; /* Full opacity - not faded */
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    animation: cloud-move 35s linear infinite; /* Slower than clouds (30s) to stay in middle */
+}
+
+/* Individual sleigh positions - centered in middle of clouds */
+.sleigh1 {
+    top: calc(10% - 40px); /* Centered above cloud1 (cloud is at 10%, sleigh slightly above) */
+    left: -350px; /* Adjusted to center on cloud (cloud starts at -400px, is ~350px wide) */
+    width: 280px;
+    animation-delay: 0s;
+}
+
+.sleigh2 {
+    top: calc(30% - 50px); /* Centered above cloud2 */
+    left: -490px; /* Adjusted to center on cloud (cloud starts at -600px, is ~420px wide) */
+    width: 320px;
+    animation-delay: 8s;
+}
+
+.sleigh3 {
+    top: calc(60% - 45px); /* Centered above cloud3 */
+    left: -445px; /* Adjusted to center on cloud (cloud starts at -500px, is ~390px wide) */
+    width: 300px;
+    animation-delay: 15s;
+}
+
+.sleigh4 {
+    top: calc(80% - 50px); /* Centered above cloud4 */
+    left: -405px; /* Adjusted to center on cloud (cloud starts at -450px, is ~370px wide) */
+    width: 290px;
+    animation-delay: 25s;
 }
 
 /* Individual cloud positions */
@@ -233,4 +269,296 @@ h1 {
     100% {
         transform: translateX(140vw); /* float all the way across screen */
     }
+}
+
+/* DARK MODE TOGGLE BUTTON (Universal - Top Right) - Christmas Tree */
+.dark-mode-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark-mode-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Christmas Tree Icon */
+.tree-icon {
+    position: relative;
+    width: 30px;
+    height: 35px;
+    display: block;
+    transition: all 0.4s ease;
+}
+
+/* Tree Top (Light Mode - Dark Tree, click to go dark) */
+.tree-top {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 12px solid #000000;
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 1px 2px rgba(255,255,255,0.3));
+}
+
+/* Tree Middle (Light Mode - Dark Tree) */
+.tree-middle {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 14px solid #1a1a1a;
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 1px 2px rgba(255,255,255,0.3));
+}
+
+/* Tree Bottom (Light Mode - Dark Tree) */
+.tree-bottom {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-bottom: 16px solid #2d2d2d;
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 1px 2px rgba(255,255,255,0.3));
+}
+
+/* Tree Trunk (Light Mode - Dark Brown) */
+.tree-trunk {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 6px;
+    background: #4a4a4a;
+    border-radius: 2px;
+    transition: all 0.4s ease;
+}
+
+/* Star on Top (Light Mode - Gold) */
+.star {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: #ffd700;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    transition: all 0.4s ease;
+    animation: star-twinkle 2s ease-in-out infinite;
+}
+
+@keyframes star-twinkle {
+    0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.7; transform: translateX(-50%) scale(1.1); }
+}
+
+/* Dark Mode - Tree becomes white (click to go light) */
+body.dark-mode .tree-top {
+    border-bottom-color: #ffffff;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+body.dark-mode .tree-middle {
+    border-bottom-color: #ffffff;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+body.dark-mode .tree-bottom {
+    border-bottom-color: #ffffff;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+body.dark-mode .tree-trunk {
+    background: #8b4513;
+}
+
+body.dark-mode .star {
+    background: #ffffff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    animation: star-glow 2s ease-in-out infinite;
+}
+
+@keyframes star-glow {
+    0%, 100% { 
+        opacity: 1; 
+        transform: translateX(-50%) scale(1);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+    50% { 
+        opacity: 0.9; 
+        transform: translateX(-50%) scale(1.2);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+    }
+}
+
+body.dark-mode .dark-mode-btn {
+    background: rgba(20, 20, 20, 0.7);
+    border-color: rgba(100, 100, 100, 0.6);
+}
+
+body.dark-mode .dark-mode-btn:hover {
+    background: rgba(30, 30, 30, 0.9);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* DARK MODE STYLES */
+body.dark-mode {
+    background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+}
+
+body.dark-mode .auth-container,
+body.dark-mode .home-container,
+body.dark-mode .rules-container,
+body.dark-mode .leaderboards-container {
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+body.dark-mode h1,
+body.dark-mode .title {
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode .auth-form input {
+    background: rgba(40, 40, 40, 0.8);
+    color: #ffffff;
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+body.dark-mode .auth-form input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .auth-form input:focus {
+    background: rgba(50, 50, 50, 0.9);
+    border-color: rgba(150, 150, 150, 0.7);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .form-toggle button {
+    background: rgba(40, 40, 40, 0.8);
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+body.dark-mode .form-toggle button.active {
+    background: rgba(60, 60, 60, 0.9);
+    color: #ffffff;
+}
+
+body.dark-mode .form-toggle button:hover {
+    background: rgba(50, 50, 50, 0.9);
+}
+
+body.dark-mode .auth-form button,
+body.dark-mode .home-btn,
+body.dark-mode .logout-btn {
+    background: rgba(60, 60, 60, 0.8);
+    color: #ffffff;
+    border: 1px solid rgba(100, 100, 100, 0.5);
+}
+
+body.dark-mode .auth-form button:hover,
+body.dark-mode .home-btn:hover {
+    background: rgba(80, 80, 80, 0.9);
+    border-color: rgba(150, 150, 150, 0.7);
+}
+
+body.dark-mode .message {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .user-info {
+    color: rgba(255, 255, 255, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .user-info strong {
+    color: #ffffff;
+}
+
+body.dark-mode .rule-section {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+body.dark-mode .rule-section h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .rule-section p,
+body.dark-mode .rule-section li {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .leaderboard-item {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+body.dark-mode .leaderboard-item:hover {
+    background: rgba(40, 40, 40, 0.7);
+}
+
+body.dark-mode .leaderboard-section {
+    background: rgba(25, 25, 25, 0.6);
+    border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+body.dark-mode .leaderboard-section h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .leaderboard-item .username,
+body.dark-mode .leaderboard-item .score {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body.dark-mode .leaderboard-item .rank {
+    color: #ffe760;
+}
+
+body.dark-mode .loading,
+body.dark-mode .error,
+body.dark-mode .empty {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Snowflakes remain visible in dark mode */
+body.dark-mode .snowflake {
+    color: #ffffff;
+    opacity: 0.8;
 }
