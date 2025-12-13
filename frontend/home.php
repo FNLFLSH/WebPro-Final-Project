@@ -70,19 +70,23 @@
             <span class="btn-text">Play</span>
         </a>
         
+        <a href="/frontend/shop.php" class="home-btn shop-btn">
+            <span class="btn-icon">🛒</span>
+            <span class="btn-text">Shop</span>
+        </a>
+        
         <a href="/frontend/rules.php" class="home-btn rules-btn">
             <span class="btn-icon">📖</span>
             <span class="btn-text">Game Rules</span>
-        </a>
-        
-        <a href="/frontend/leaderboards.php" class="home-btn leaderboards-btn">
-            <span class="btn-icon">🏆</span>
-            <span class="btn-text">Leaderboards</span>
         </a>
     </div>
     
     <div class="user-info">
         <p>Logged in as: <strong><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></strong></p>
+        <div class="coin-display">
+            <span class="coin-icon">🪙</span>
+            <span class="coin-amount" id="coinBalance">Loading...</span>
+        </div>
         <button id="logoutBtn" class="logout-btn">
             <span class="btn-icon">🚪</span>
             <span class="btn-text">Logout</span>
@@ -98,6 +102,25 @@
 
 <!-- Dark Mode JS -->
 <script src="/public/assets/js/darkmode.js"></script>
+
+<!-- Load Coin Balance -->
+<script>
+async function loadCoinBalance() {
+    try {
+        const response = await fetch('/api/get-user-coins.php');
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('coinBalance').textContent = data.coins;
+        }
+    } catch (error) {
+        console.error('Error loading coins:', error);
+        document.getElementById('coinBalance').textContent = '0';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadCoinBalance);
+</script>
 
 <!-- Logout Handler -->
 <script>

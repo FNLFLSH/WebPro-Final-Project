@@ -7,7 +7,9 @@ body {
     margin: 0;
     padding: 30px 20px;
     color: #ffffff;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
 /* TITLE */
@@ -153,6 +155,114 @@ body {
     transform: translateY(-3px);
 }
 
+/* Coin Display in Game */
+.coin-display-game {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background: rgba(255, 231, 96, 0.3);
+    border: 2px solid rgba(255, 200, 50, 0.6);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    margin: 0 10px;
+}
+
+.coin-display-game .coin-icon {
+    font-size: 1.3rem;
+}
+
+/* Power-ups Section */
+.powerups-section {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.powerups-title {
+    font-family: 'Mountains of Christmas', cursive;
+    font-size: 1.5rem;
+    color: white;
+    margin: 0 0 15px 0;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.powerups-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.powerup-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 140px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.powerup-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.powerup-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(150, 150, 150, 0.2);
+}
+
+.powerup-icon {
+    font-size: 2rem;
+}
+
+.powerup-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.powerup-quantity {
+    background: rgba(255, 231, 96, 0.8);
+    color: #333;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    min-width: 30px;
+}
+
+/* Timer frozen state */
+.timer.frozen {
+    color: #6ccced;
+    text-shadow: 0 0 10px rgba(108, 206, 237, 0.8);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
 /* ❄ UNIVERSAL SNOWFLAKES */
 .snowflake {
     position: fixed;
@@ -237,6 +347,13 @@ body {
     margin-bottom: 20px;
 }
 
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
 .modal-btn {
     background: #dff6ff;
     padding: 12px 20px;
@@ -247,6 +364,17 @@ body {
     cursor: pointer;
     color: #023047;
     transition: 0.25s;
+}
+
+.modal-btn-secondary {
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+.modal-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
 .modal-btn:hover {
@@ -555,4 +683,35 @@ body.dark-mode .countdown {
 body.dark-mode .snowflake {
     color: #ffffff;
     opacity: 0.8;
+}
+
+body.dark-mode .coin-display-game {
+    background: rgba(255, 231, 96, 0.2);
+    border-color: rgba(255, 200, 50, 0.4);
+    color: #ffe760;
+}
+
+body.dark-mode .powerups-section {
+    background: rgba(30, 30, 30, 0.5);
+    border-color: rgba(100, 100, 100, 0.3);
+}
+
+body.dark-mode .powerup-btn {
+    background: rgba(60, 60, 60, 0.6);
+    border-color: rgba(100, 100, 100, 0.4);
+}
+
+body.dark-mode .powerup-btn:hover:not(:disabled) {
+    background: rgba(80, 80, 80, 0.8);
+    border-color: rgba(150, 150, 150, 0.6);
+}
+
+body.dark-mode .powerup-quantity {
+    background: rgba(255, 231, 96, 0.6);
+    color: #333;
+}
+
+body.dark-mode .timer.frozen {
+    color: #6ccced;
+    text-shadow: 0 0 15px rgba(108, 206, 237, 1);
 }

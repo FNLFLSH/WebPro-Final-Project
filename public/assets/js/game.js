@@ -7,6 +7,10 @@ let timeElapsed = 0;
 let moveCount = 0; // Track player moves for snow intensity
 let gridSize = 4; // Default, will be loaded from level
 let totalTiles = 16; // Default, will be calculated from gridSize
+let currentSessionId = null; // Track current game session
+let isTimerFrozen = false; // Track if timer is frozen
+let freezeTimeout = null; // Track freeze timeout
+let userPowerups = { freeze_timer: 0, smart_shuffle: 0 }; // Track available power-ups
 
 // Make allowPlayerMoves accessible globally for pause.js
 window.allowPlayerMoves = allowPlayerMoves;
@@ -21,8 +25,11 @@ function startTimer() {
     }
     
     timerInterval = setInterval(() => {
-        // Don't increment if paused
+        // Don't increment if paused or frozen
         if (typeof window !== 'undefined' && window.isPaused && window.isPaused()) {
+            return;
+        }
+        if (isTimerFrozen) {
             return;
         }
         
@@ -52,6 +59,16 @@ function resetTimer() {
     timeElapsed = 0;
     moveCount = 0; // Reset move count
     timerDisplay.textContent = "⏱️ 00:00";
+    
+    // Clear freeze state
+    isTimerFrozen = false;
+    if (freezeTimeout) {
+        clearTimeout(freezeTimeout);
+        freezeTimeout = null;
+    }
+    if (timerDisplay) {
+        timerDisplay.classList.remove('frozen');
+    }
     
     // Reset snow intensity to base level
     if (window.snowManager) {
@@ -124,7 +141,27 @@ function initBoard() {
         board.appendChild(tile);
     }
 
-    startCountdown(() => {
+    startCountdown(async () => {
+        // Start a new game session
+        try {
+            const response = await fetch('/api/start-session.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    gridSize: gridSize
+                })
+            });
+            
+            const data = await response.json();
+            if (data.success && data.sessionId) {
+                currentSessionId = data.sessionId;
+            }
+        } catch (error) {
+            console.error('Error starting session:', error);
+        }
+        
         shuffleBoard();
         setTimeout(() => {
             allowPlayerMoves = true; // players can now move
@@ -225,6 +262,9 @@ function checkWin() {
     handleWin();
 }
 
+// Track if level was advanced during this win
+let levelWasAdvanced = false;
+
 //  HANDLE WIN - Advance level and show modal
 async function handleWin() {
     // Check if level was specified in URL (from level selection)
@@ -234,13 +274,70 @@ async function handleWin() {
     const currentLevel = typeof getCurrentLevel === 'function' ? getCurrentLevel() : 1;
     const maxLevel = typeof MAX_LEVEL !== 'undefined' ? MAX_LEVEL : 8;
     
-    let levelAdvanced = false;
-    // Only advance if no level was specified in URL (playing from home/current level)
-    if (!levelParam && currentLevel < maxLevel && typeof advanceLevel === 'function') {
-        levelAdvanced = await advanceLevel();
+    // Mark session as completed
+    if (currentSessionId) {
+        try {
+            await fetch('/api/update-session.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sessionId: currentSessionId,
+                    board: tiles,
+                    moves: moveCount,
+                    completed: true
+                })
+            });
+        } catch (error) {
+            console.error('Error updating session:', error);
+        }
     }
     
-    showWinModal(currentLevel, levelAdvanced);
+    // Award coins for completing level
+    try {
+        await fetch('/api/award-coins.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                coins: 50
+            })
+        });
+        // Reload coin balance
+        await loadCoinBalance();
+    } catch (error) {
+        console.error('Error awarding coins:', error);
+    }
+    
+    // Unlock next level if not at max
+    if (currentLevel < maxLevel) {
+        try {
+            // Unlock the next level
+            const nextLevel = currentLevel + 1;
+            await fetch('/api/unlock-level.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    level: nextLevel
+                })
+            });
+        } catch (error) {
+            console.error('Error unlocking level:', error);
+        }
+    }
+    
+    levelWasAdvanced = false;
+    
+    // Only advance if no level was specified in URL (playing from home/current level)
+    if (!levelParam && currentLevel < maxLevel && typeof advanceLevel === 'function') {
+        levelWasAdvanced = await advanceLevel();
+    }
+    
+    showWinModal(currentLevel, levelWasAdvanced);
 }
 
 //  WIN POPUP LOGIC
@@ -253,6 +350,7 @@ function showWinModal(level, levelAdvanced) {
     const modalTitle = document.getElementById("winModalTitle");
     const modalText = document.getElementById("winModalText");
     const okBtn = document.getElementById("modal-ok");
+    const homeBtn = document.getElementById("modal-home");
     
     if (levelAdvanced) {
         const newLevel = level + 1;
@@ -269,15 +367,58 @@ function showWinModal(level, levelAdvanced) {
         okBtn.textContent = "Next Level";
     }
     
+    // Show home button (it's always available)
+    if (homeBtn) {
+        homeBtn.style.display = "inline-block";
+    }
+    
     winModal.classList.remove("hidden");
 }
 
 closeBtn.onclick = () => winModal.classList.add("hidden");
 
-okBtn.onclick = () => {
+okBtn.onclick = async () => {
     winModal.classList.add("hidden");
+    
+    // Check if we should advance to next level
+    const urlParams = new URLSearchParams(window.location.search);
+    const levelParam = urlParams.get('level');
+    const currentLevel = typeof getCurrentLevel === 'function' ? getCurrentLevel() : 1;
+    const maxLevel = typeof MAX_LEVEL !== 'undefined' ? MAX_LEVEL : 8;
+    
+    // If level was already advanced in handleWin() and no level param, reload to show next level
+    if (levelWasAdvanced && !levelParam && currentLevel < maxLevel) {
+        // Level was already advanced and saved, just reload
+        window.location.reload();
+        return;
+    }
+    
+    // If no level param and we're not at max, try to advance
+    if (!levelParam && currentLevel < maxLevel) {
+        // Advance level and save
+        if (typeof advanceLevel === 'function') {
+            const advanced = await advanceLevel();
+            if (advanced) {
+                // Reload page to show next level
+                window.location.reload();
+                return;
+            }
+        }
+    }
+    
+    // Just restart current level (or if we're at max level)
     initBoard();
 };
+
+// Home button handler
+const homeBtn = document.getElementById("modal-home");
+if (homeBtn) {
+    homeBtn.onclick = () => {
+        // Progress is already saved (session marked as completed, level unlocked)
+        // Just navigate to home
+        window.location.href = "/frontend/home.php";
+    };
+}
 
 
 //  BUTTONS
@@ -403,4 +544,244 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Initialize the board with the correct size
     initBoard();
+    
+    // Load coin balance and power-ups
+    await loadCoinBalance();
+    await loadPowerups();
+});
+
+// Load coin balance
+async function loadCoinBalance() {
+    try {
+        const response = await fetch('/api/get-user-coins.php');
+        const data = await response.json();
+        
+        if (data.success) {
+            const coinDisplay = document.getElementById('coinAmountGame');
+            if (coinDisplay) {
+                coinDisplay.textContent = data.coins;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading coins:', error);
+    }
+}
+
+// Load power-ups
+async function loadPowerups() {
+    try {
+        const response = await fetch('/api/get-user-powerups.php');
+        const data = await response.json();
+        
+        if (data.success) {
+            userPowerups = data.powerups;
+            updatePowerupButtons();
+        }
+    } catch (error) {
+        console.error('Error loading power-ups:', error);
+    }
+}
+
+// Update power-up button states
+function updatePowerupButtons() {
+    const freezeBtn = document.getElementById('freezeBtn');
+    const smartShuffleBtn = document.getElementById('smartShuffleBtn');
+    const freezeQuantity = document.getElementById('freezeQuantity');
+    const smartShuffleQuantity = document.getElementById('smartShuffleQuantity');
+    
+    if (freezeBtn && freezeQuantity) {
+        const quantity = userPowerups.freeze_timer || 0;
+        freezeQuantity.textContent = quantity;
+        freezeBtn.disabled = quantity === 0;
+    }
+    
+    if (smartShuffleBtn && smartShuffleQuantity) {
+        const quantity = userPowerups.smart_shuffle || 0;
+        smartShuffleQuantity.textContent = quantity;
+        smartShuffleBtn.disabled = quantity === 0;
+    }
+}
+
+// Freeze timer for 30 seconds
+async function freezeTimer() {
+    if (isTimerFrozen || userPowerups.freeze_timer === 0) {
+        return;
+    }
+    
+    // Use power-up
+    try {
+        const response = await fetch('/api/use-powerup.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                powerup_type: 'freeze_timer'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update local count
+            userPowerups.freeze_timer = data.remaining;
+            updatePowerupButtons();
+            
+            // Freeze timer
+            isTimerFrozen = true;
+            const timerDisplay = document.getElementById('timer');
+            if (timerDisplay) {
+                timerDisplay.classList.add('frozen');
+            }
+            
+            // Resume after 30 seconds
+            freezeTimeout = setTimeout(() => {
+                isTimerFrozen = false;
+                if (timerDisplay) {
+                    timerDisplay.classList.remove('frozen');
+                }
+                freezeTimeout = null;
+            }, 30000);
+        } else {
+            alert('Failed to use freeze timer: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error using freeze timer:', error);
+        alert('Failed to use freeze timer. Please try again.');
+    }
+}
+
+// Smart shuffle - reshuffle to easier state
+async function smartShuffle() {
+    if (userPowerups.smart_shuffle === 0) {
+        return;
+    }
+    
+    // Use power-up
+    try {
+        const response = await fetch('/api/use-powerup.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                powerup_type: 'smart_shuffle'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update local count
+            userPowerups.smart_shuffle = data.remaining;
+            updatePowerupButtons();
+            
+            // Perform smart shuffle
+            performSmartShuffle();
+        } else {
+            alert('Failed to use smart shuffle: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error using smart shuffle:', error);
+        alert('Failed to use smart shuffle. Please try again.');
+    }
+}
+
+// Perform smart shuffle algorithm
+function performSmartShuffle() {
+    // Save current state
+    const currentTiles = [...tiles];
+    const currentEmptyIndex = emptyIndex;
+    
+    // Generate multiple shuffle attempts and pick the easiest one
+    const solvedState = [];
+    for (let i = 1; i < totalTiles; i++) {
+        solvedState.push(i);
+    }
+    solvedState.push(null);
+    
+    let bestShuffle = null;
+    let bestDistance = Infinity;
+    
+    // Try 20 different shuffles (using valid moves to ensure solvability)
+    for (let attempt = 0; attempt < 20; attempt++) {
+        // Reset to solved state
+        tiles = [...solvedState];
+        emptyIndex = totalTiles - 1;
+        
+        // Perform a shorter shuffle (fewer moves = easier)
+        const shuffleMoves = Math.floor(gridSize * 20 + Math.random() * gridSize * 10); // 20-30 moves per grid size
+        
+        for (let move = 0; move < shuffleMoves; move++) {
+            const neighbors = [];
+            for (let i = 0; i < totalTiles; i++) {
+                if (isAdjacent(emptyIndex, i)) neighbors.push(i);
+            }
+            
+            if (neighbors.length > 0) {
+                const moveIndex = neighbors[Math.floor(Math.random() * neighbors.length)];
+                // Use moveTile without playerMove flag to shuffle
+                const temp = tiles[moveIndex];
+                tiles[moveIndex] = null;
+                tiles[emptyIndex] = temp;
+                emptyIndex = moveIndex;
+            }
+        }
+        
+        // Calculate Manhattan distance to solved state
+        const distance = calculateManhattanDistance(tiles, solvedState);
+        
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestShuffle = [...tiles];
+        }
+    }
+    
+    // Apply the best shuffle
+    if (bestShuffle) {
+        tiles = bestShuffle;
+        emptyIndex = tiles.indexOf(null);
+        updateBoard();
+    } else {
+        // Fallback: restore original state
+        tiles = currentTiles;
+        emptyIndex = currentEmptyIndex;
+        updateBoard();
+    }
+}
+
+// Calculate Manhattan distance between two states
+function calculateManhattanDistance(state1, state2) {
+    let distance = 0;
+    const size = Math.sqrt(state1.length);
+    
+    for (let i = 0; i < state1.length; i++) {
+        if (state1[i] === null) continue;
+        
+        const pos1 = i;
+        const pos2 = state2.indexOf(state1[i]);
+        
+        const row1 = Math.floor(pos1 / size);
+        const col1 = pos1 % size;
+        const row2 = Math.floor(pos2 / size);
+        const col2 = pos2 % size;
+        
+        distance += Math.abs(row1 - row2) + Math.abs(col1 - col2);
+    }
+    
+    return distance;
+}
+
+// Add event listeners for power-up buttons
+document.addEventListener('DOMContentLoaded', () => {
+    const freezeBtn = document.getElementById('freezeBtn');
+    const smartShuffleBtn = document.getElementById('smartShuffleBtn');
+    
+    if (freezeBtn) {
+        freezeBtn.addEventListener('click', freezeTimer);
+    }
+    
+    if (smartShuffleBtn) {
+        smartShuffleBtn.addEventListener('click', smartShuffle);
+    }
 });

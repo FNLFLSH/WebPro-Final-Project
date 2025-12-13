@@ -85,7 +85,7 @@ if (!$stmt) {
 }
 $stmt->bind_param("iiss", $userId, $puzzleSize, $boardJson, $boardJson);
 $stmt->execute();
-$sessionId = getLastInsertId();
+$sessionId = (int)$mysqli->insert_id;
 $stmt->close();
 
 // log analytics event

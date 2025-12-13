@@ -45,6 +45,12 @@
     <!-- Level Display -->
     <div id="levelDisplay" class="level-display">Level 1</div>
 
+    <!-- Coin Display -->
+    <div id="coinDisplay" class="coin-display-game">
+        <span class="coin-icon">🪙</span>
+        <span id="coinAmountGame">0</span>
+    </div>
+
     <!-- Timer -->
     <div id="timer" class="timer">⏱️ 00:00</div>
 
@@ -56,7 +62,10 @@
             <h2 class="modal-title" id="winModalTitle">🎉 You Solved the Puzzle! 🎄</h2>
             <p class="modal-text" id="winModalText">Amazing job — you're a true Christmas puzzle master! ❄️✨</p>
 
-            <button id="modal-ok" class="modal-btn">Next Level</button>
+            <div class="modal-buttons">
+                <button id="modal-ok" class="modal-btn">Next Level</button>
+                <button id="modal-home" class="modal-btn modal-btn-secondary">🏠 Go Home</button>
+            </div>
         </div>
     </div>
 
@@ -97,6 +106,23 @@
     <div class="controls">
         <button id="shuffleBtn">🔀 Shuffle</button>
         <button id="hintBtn">💡 Hint</button>
+    </div>
+    
+    <!-- POWER-UPS -->
+    <div class="powerups-section">
+        <h3 class="powerups-title">Power-ups</h3>
+        <div class="powerups-buttons">
+            <button id="freezeBtn" class="powerup-btn" disabled>
+                <span class="powerup-icon">❄️</span>
+                <span class="powerup-name">Freeze Timer</span>
+                <span class="powerup-quantity" id="freezeQuantity">0</span>
+            </button>
+            <button id="smartShuffleBtn" class="powerup-btn" disabled>
+                <span class="powerup-icon">🔀</span>
+                <span class="powerup-name">Smart Shuffle</span>
+                <span class="powerup-quantity" id="smartShuffleQuantity">0</span>
+            </button>
+        </div>
     </div>
 
     <!-- Universal Snowflakes -->

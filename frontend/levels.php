@@ -108,6 +108,7 @@ async function loadLevels() {
         
         if (data.success) {
             const unlockedLevels = data.unlockedLevels || [1];
+            const completedLevels = data.completedLevels || [];
             const currentLevel = data.currentLevel || 1;
             
             const grid = document.getElementById('levelsGrid');
@@ -115,20 +116,22 @@ async function loadLevels() {
             
             for (let level = 1; level <= MAX_LEVEL; level++) {
                 const isUnlocked = unlockedLevels.includes(level);
+                const isCompleted = completedLevels.includes(level);
                 const isCurrent = level === currentLevel;
                 const gridSize = LEVEL_TO_SIZE[level];
                 
                 const levelCard = document.createElement('div');
-                levelCard.className = `level-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+                levelCard.className = `level-card ${isUnlocked ? 'unlocked' : 'locked'} ${isCompleted ? 'completed' : ''}`;
                 
                 if (isUnlocked) {
                     levelCard.innerHTML = `
                         <div class="level-number">${level}</div>
                         <div class="level-info">
                             <div class="level-size">${gridSize}×${gridSize}</div>
-                            ${isCurrent ? '<div class="level-badge current">Current</div>' : ''}
+                            ${isCompleted ? '<div class="level-badge completed">✓ Completed</div>' : ''}
+                            ${!isCompleted && isCurrent ? '<div class="level-badge current">Current</div>' : ''}
                         </div>
-                        <a href="/frontend/index.php?level=${level}" class="level-play-btn">Play</a>
+                        <a href="/frontend/index.php?level=${level}" class="level-play-btn">${isCompleted ? 'Replay' : 'Play'}</a>
                     `;
                 } else {
                     levelCard.innerHTML = `

@@ -59,49 +59,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// --- Leaderboard by completion time (top 10) ---
-$query = "
-    SELECT 
-        u.username,
-        MIN(gs.completion_time) AS best_time,
-        COUNT(DISTINCT gs.id) AS games_played,
-        AVG(gs.completion_time) AS avg_time
-    FROM users u
-    JOIN game_sessions gs ON u.id = gs.user_id
-    WHERE gs.completed = 1
-    GROUP BY u.id, u.username
-    ORDER BY best_time ASC
-    LIMIT 10
-";
-$result = $mysqli->query($query);
-$leaderTime = [];
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $leaderTime[] = $row;
-    }
-}
-
-// --- Leaderboard by moves (top 10) ---
-$query = "
-    SELECT 
-        u.username,
-        MIN(gs.moves) AS best_moves,
-        COUNT(DISTINCT gs.id) AS games_played,
-        AVG(gs.moves) AS avg_moves
-    FROM users u
-    JOIN game_sessions gs ON u.id = gs.user_id
-    WHERE gs.completed = 1
-    GROUP BY u.id, u.username
-    ORDER BY best_moves ASC
-    LIMIT 10
-";
-$result = $mysqli->query($query);
-$leaderMoves = [];
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $leaderMoves[] = $row;
-    }
-}
+// Leaderboard functionality removed
 
 // --- Recent completions feed ---
 $query = "
@@ -125,22 +83,11 @@ if ($result) {
     }
 }
 
-// Check if leaderboards are requested
-$requestType = $_GET['type'] ?? '';
-
-if ($requestType === 'leaderboards') {
-    jsonResponse([
-        'success' => true,
-        'fastest_times' => $leaderTime,
-        'fewest_moves' => $leaderMoves
-    ]);
-}
+// Leaderboard functionality removed
 
 jsonResponse([
     'success'        => true,
     'summary'        => $summary,
     'bySize'         => $bySize,
-    'leaderboardTime'=> $leaderTime,
-    'leaderboardMoves'=>$leaderMoves,
     'recentCompletions' => $recent
 ]);

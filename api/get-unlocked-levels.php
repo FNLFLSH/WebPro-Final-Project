@@ -49,6 +49,15 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
+// Map completed sizes to completed levels
+$sizeToLevel = [3 => 1, 4 => 2, 5 => 3, 6 => 4, 7 => 5, 8 => 6, 9 => 7, 10 => 8];
+$completedLevels = [];
+foreach ($completedSizes as $size) {
+    if (isset($sizeToLevel[$size])) {
+        $completedLevels[] = $sizeToLevel[$size];
+    }
+}
+
 // Map grid sizes to levels
 $sizeToLevel = [3 => 1, 4 => 2, 5 => 3, 6 => 4, 7 => 5, 8 => 6, 9 => 7, 10 => 8];
 $unlockedLevels = [1]; // Level 1 is always unlocked
@@ -70,12 +79,32 @@ for ($i = 1; $i <= $currentLevel; $i++) {
     }
 }
 
+// Also unlock level 2 if level 1 was completed (even if current_level is still 1)
+// This handles the case where user completes level 1 from the levels page
+$stmt = $mysqli->prepare("
+    SELECT COUNT(*) as count
+    FROM game_sessions
+    WHERE user_id = ? AND completed = 1 AND puzzle_size = 3
+");
+if ($stmt) {
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    
+    if ($row && $row['count'] > 0 && !in_array(2, $unlockedLevels)) {
+        $unlockedLevels[] = 2;
+    }
+}
+
 sort($unlockedLevels);
 
 jsonResponse([
     'success' => true,
     'currentLevel' => $currentLevel,
     'unlockedLevels' => $unlockedLevels,
+    'completedLevels' => $completedLevels, // Levels the user has actually completed
     'maxLevel' => 8
 ]);
 

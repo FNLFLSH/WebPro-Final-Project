@@ -8,9 +8,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     color: white;
 }
 
@@ -440,8 +441,7 @@ body.dark-mode {
 
 body.dark-mode .auth-container,
 body.dark-mode .home-container,
-body.dark-mode .rules-container,
-body.dark-mode .leaderboards-container {
+body.dark-mode .rules-container {
     background: rgba(20, 20, 20, 0.8);
     border: 1px solid rgba(100, 100, 100, 0.3);
 }
@@ -522,33 +522,6 @@ body.dark-mode .rule-section h2 {
 body.dark-mode .rule-section p,
 body.dark-mode .rule-section li {
     color: rgba(255, 255, 255, 0.9);
-}
-
-body.dark-mode .leaderboard-item {
-    background: rgba(30, 30, 30, 0.5);
-    border: 1px solid rgba(100, 100, 100, 0.3);
-}
-
-body.dark-mode .leaderboard-item:hover {
-    background: rgba(40, 40, 40, 0.7);
-}
-
-body.dark-mode .leaderboard-section {
-    background: rgba(25, 25, 25, 0.6);
-    border: 1px solid rgba(100, 100, 100, 0.3);
-}
-
-body.dark-mode .leaderboard-section h2 {
-    color: #ffffff;
-}
-
-body.dark-mode .leaderboard-item .username,
-body.dark-mode .leaderboard-item .score {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-body.dark-mode .leaderboard-item .rank {
-    color: #ffe760;
 }
 
 body.dark-mode .loading,
