@@ -35,7 +35,29 @@ See `docs/TEAM_ROLES.md` for detailed responsibilities.
 
 ## Getting Started
 
+### Quick Start
+
+**Start everything with one command:**
+```bash
+./start-all.sh
+```
+
+When prompted for SSH credentials:
+- **Username:** `ebinitie1` (or press Enter for default)
+- **Password:** `lastsemester2026`
+
+Then open: **http://localhost:8000**
+
+### Detailed Setup
+
 1. Clone the repository
-2. Review the project structure
-3. Each team member should work in their respective directories
-4. See `docs/DESIGN.md` for wireframes and design documentation
+2. See **[SETUP.md](SETUP.md)** for complete setup instructions
+3. Review the project structure
+4. Each team member should work in their respective directories
+5. See `docs/DESIGN.md` for wireframes and design documentation
+
+### Documentation
+
+- **[SETUP.md](SETUP.md)** - Complete setup and run guide
+- **[README_STARTUP.md](README_STARTUP.md)** - Detailed startup scripts documentation
+- **[AUTO_START_GUIDE.md](AUTO_START_GUIDE.md)** - Auto-start tunnel on login guide
