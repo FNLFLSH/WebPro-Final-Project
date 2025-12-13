@@ -14,3 +14,4 @@ UPDATE user_preferences SET current_level = 1 WHERE current_level IS NULL;
 DESCRIBE user_preferences;
 
 
+

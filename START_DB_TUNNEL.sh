@@ -10,3 +10,4 @@ echo ""
 ssh -L 3306:localhost:3306 ebinitie1@codd.cs.gsu.edu
 
 
+

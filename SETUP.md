@@ -7,6 +7,38 @@
 - Access to GSU WiFi or VPN
 - MySQL database on `codd.cs.gsu.edu`
 
+### ⚡ Easiest Way: Start Everything at Once
+
+**One command to start database tunnel + frontend + backend:**
+
+```bash
+./start-all.sh
+```
+
+This script will:
+- ✅ Check if SSH tunnel is already running
+- ✅ Try passwordless connection first (SSH keys)
+- ✅ If needed, prompt you for SSH username and password
+- ✅ Start PHP server (frontend + backend)
+- ✅ Show you the URL to open
+
+**SSH Credentials (when prompted):**
+- **Username:** `ebinitie1`
+- **Password:** `lastsemester2026`
+
+**First time setup (optional - for passwordless login):**
+```bash
+# Setup SSH keys for passwordless login (one-time)
+./setup-ssh-keys.sh
+# When prompted for password, use: lastsemester2026
+```
+
+After SSH keys are set up, you can use `./start-all.sh` without entering credentials!
+
+---
+
+### Manual Setup (Alternative)
+
 ### Step 1: Database Setup
 
 **If you're on GSU WiFi or have SSH access:**
@@ -47,12 +79,21 @@
 
 ### Step 2: Start SSH Tunnel (Required for Database)
 
-**Open a terminal and keep it running:**
+**Option A: Use the automated script (recommended):**
+```bash
+./start-all.sh
+```
+When prompted:
+- **SSH Username:** `ebinitie1` (or press Enter for default)
+- **SSH Password:** `lastsemester2026`
+
+**Option B: Start tunnel manually:**
 ```bash
 ssh -L 3306:localhost:3306 ebinitie1@codd.cs.gsu.edu
+# Password: lastsemester2026
 ```
 
-**Important:** Keep this terminal open while using the app. This creates a tunnel so your PHP app can connect to the database.
+**Important:** Keep the tunnel running while using the app. This creates a tunnel so your PHP app can connect to the database.
 
 ### Step 3: Start PHP Server
 
@@ -65,6 +106,17 @@ php -S localhost:8000 -t .
 ### Step 4: Open in Browser
 
 Navigate to: **http://localhost:8000**
+
+---
+
+### 🎯 Available Startup Scripts
+
+| Script | What It Does |
+|--------|-------------|
+| `./start-all.sh` | **Start everything** (tunnel + frontend + backend) |
+| `./start-dev.sh` | Start tunnel + PHP server (simpler version) |
+| `./install-tunnel-service.sh` | Auto-start tunnel on login (macOS) |
+| `./setup-ssh-keys.sh` | Setup passwordless SSH (one-time) |
 
 ---
 
@@ -144,6 +196,12 @@ WebPro3/
 
 ## 🔐 Database Connection Info
 
+### SSH Tunnel Credentials
+- **SSH Server:** `codd.cs.gsu.edu`
+- **SSH Username:** `ebinitie1`
+- **SSH Password:** `lastsemester2026`
+
+### MySQL Database Credentials
 - **Server:** `codd.cs.gsu.edu` (via SSH tunnel: `127.0.0.1:3306`)
 - **Database:** `ebinitie1`
 - **Username:** `ebinitie1`
@@ -167,5 +225,6 @@ WebPro3/
 2. Verify PHP server is running
 3. Check browser console (F12) for errors
 4. Verify database connection: `php test_db_connection.php`
+
 
 
