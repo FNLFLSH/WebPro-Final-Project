@@ -51,13 +51,18 @@ Then open: **http://localhost:8000**
 ### Detailed Setup
 
 1. Clone the repository
-2. See **[SETUP.md](SETUP.md)** for complete setup instructions
+2. See **[docs/SETUP.md](docs/SETUP.md)** for complete setup instructions
 3. Review the project structure
 4. Each team member should work in their respective directories
 5. See `docs/DESIGN.md` for wireframes and design documentation
 
 ### Documentation
 
-- **[SETUP.md](SETUP.md)** - Complete setup and run guide
-- **[README_STARTUP.md](README_STARTUP.md)** - Detailed startup scripts documentation
-- **[AUTO_START_GUIDE.md](AUTO_START_GUIDE.md)** - Auto-start tunnel on login guide
+All documentation is in the `docs/` folder:
+
+- **[docs/SETUP.md](docs/SETUP.md)** - Complete setup and run guide
+- **[docs/README_STARTUP.md](docs/README_STARTUP.md)** - Detailed startup scripts documentation
+- **[docs/AUTO_START_GUIDE.md](docs/AUTO_START_GUIDE.md)** - Auto-start tunnel on login guide
+- **[docs/DATABASE.md](docs/DATABASE.md)** - Database schema and setup
+- **[docs/DESIGN.md](docs/DESIGN.md)** - Design documentation and wireframes
+- **[docs/TEAM_ROLES.md](docs/TEAM_ROLES.md)** - Team member responsibilities
